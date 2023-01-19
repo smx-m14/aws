@@ -13,8 +13,14 @@ fi
 apt update > /dev/null 2> /dev/null;
 apt install dialog gcc make net-tools unzip -y > /dev/null 2> /dev/null;
 
-# Funcions
-askPassword() {
+
+# Variables globals
+userPass="Thos123!";
+
+# Contrasenya d'usuari pel XAMPP
+exitCode1=1;
+while [[ $exitCode1 -ne 0 ]]
+do
    userPass=$(dialog --title "Contrasenyes pel XAMPP" --insecure --clear --passwordbox "Indiqueu la contrasenya del vostre compte d'usuari" 10 50 3>&1- 1>&2- 2>&3- );
    exitCode1=$?;
    
@@ -33,33 +39,10 @@ askPassword() {
      dialog --msgbox "Les contrasenyes indicades no coincideixen. Si us plau, introduïu-les de nou." 7 50
      exitCode1=1;   
    fi
-}
-
-
-# Variables globals
-userPass="Thos123!";
-
-
-exitCode1=1;
-while [[ $exitCode1 -ne 0 ]]
-do
-   askPassword;
 done
 
-
-# Demanar password per la màquina
-#echo "root:$userPass" | chpasswd;
-#echo "ubuntu:$userPass" | chpasswd;
-# No ho fem, ho farem amb el certificat?
-
-
-# TO DO: COMPTE CAL BUSCAR EL NOM D'ARXIU!!!!
-# Si no fem la part de dalt, aquesta tampoc
-# Permetem l'accés per password a la consola i reiniciem servei
-#sed -i 's/PasswordAuthentication no/PasswordAuthentication yes/' filename
-#service sshd restart
-
-# TO DO: UNA ADREÇA DE XAMPP QUE SERVEIXI, ARA NO HI HA 7.4.33 --> MILLOR FER MIRROR
+# Diàleg de descarrega del XAMPP
+dialog --title "XAMPP" --infobox "Espereu mentre instal·lem i configurem XAMPP. Aquesta operació pot trigar uns minuts." 5 50;
 
 # Instal·lem i configurem XAMPP
 wget https://github.com/smx-m14/aws/raw/main/xampp/xampp.zip.001 > /dev/null 2> /dev/null;
@@ -70,40 +53,41 @@ wget https://github.com/smx-m14/aws/raw/main/xampp/xampp.zip.005 > /dev/null 2> 
 wget https://github.com/smx-m14/aws/raw/main/xampp/xampp.zip.006 > /dev/null 2> /dev/null;
 wget https://github.com/smx-m14/aws/raw/main/xampp/xampp.zip.007 > /dev/null 2> /dev/null;
 cat xampp* > xampp.zip;
-unzip xampp.zip;
-chmod u+x xampp.run;
+unzip xampp.zip > /dev/null 2> /dev/null;
+chmod u+x xampp.run > /dev/null 2> /dev/null;
 ./xampp.run --mode unattended > /dev/null 2> /dev/null;
-/opt/lampp/lampp restart  > /dev/null 2> /dev/null;
-rm xampp*;
+/opt/lampp/lampp restart > /dev/null 2> /dev/null;
+rm xampp* > /dev/null 2> /dev/null;
+
+# Diàleg XAMPP instal·lat
+dialog --title "XAMPP" --infobox "XAMPP correctament instal·lat." 5 50;
 
 # Desactiva XAMPP per xarxa
-sed -i 's/#skip-networking/skip-networking/' /opt/lampp/etc/my.cnf
+sed -i 's/#skip-networking/skip-networking/' /opt/lampp/etc/my.cnf;
 
-# Canvia password del pma i del root
-echo "update user set Password=password('$userPass') where User = 'pma';" | /opt/lampp/bin/mysql -uroot mysql
-echo "ALTER USER 'root'@'localhost' IDENTIFIED BY '$userPass';flush privileges;exit;" | /opt/lampp/bin/mysql -uroot
-/opt/lampp/bin/mysqladmin reload
+# Canvia password del pma i del root???
+echo "update user set Password=password('$userPass') where User = 'pma';" | /opt/lampp/bin/mysql -uroot mysql;
+echo "ALTER USER 'root'@'localhost' IDENTIFIED BY '$userPass';flush privileges;exit;" | /opt/lampp/bin/mysql -uroot;
+/opt/lampp/bin/mysqladmin reload;
 
 
 # Configuració phpmyadmin
+sed -i 's/AllowOverride AuthConfig Limit/AllowOverride AuthConfig/' /opt/lampp/etc/extra/httpd-xampp.conf
+sed -i 's/Require local/Require all granted/' /opt/lampp/etc/extra/httpd-xampp.conf
+
 cat /opt/lampp/phpmyadmin/config.inc.php | grep -v 'controlpass' | grep -v 'password' | grep -v 'auth_type' > config.inc.php
 echo "\$cfg['Servers'][\$i]['auth_type'] = 'cookie';" >> config.inc.php;
 echo "\$cfg['Servers'][\$i]['controlpass'] = '$userPass';" >> config.inc.php;
 echo "\$cfg['Servers'][\$i]['password'] = '$userPass';" >> config.inc.php;
 mv config.inc.php /opt/lampp/phpmyadmin/config.inc.php
-/opt/lampp/lampp restart > /dev/null 2> /dev/null;
-
-# Obrim phpmyadmin per xarxa
-sed -i 's/AllowOverride AuthConfig Limit/AllowOverride AuthConfig/' /opt/lampp/etc/extra/httpd-xampp.conf
-sed -i 's/Require local/Require all granted/' /opt/lampp/etc/extra/httpd-xampp.conf
 
 # Fem que daemon funcioni amb la contrasenya establida
-chown -R daemon:daemon /opt/lampp/htdocs
-sed -i 's/UserPassword/#UserPassword/' /opt/lampp/etc/proftpd.conf
-echo "PassivePorts           30000 30100" >> /opt/lampp/etc/proftpd.conf
+chown -R daemon:daemon /opt/lampp/htdocs;
+sed -i 's/UserPassword/#UserPassword/' /opt/lampp/etc/proftpd.conf;
+echo "PassivePorts           30000 30100" >> /opt/lampp/etc/proftpd.conf;
 echo "daemon:$userPass" | chpasswd;
 
-/opt/lampp/lampp restart  > /dev/null 2> /dev/null;
+/opt/lampp/lampp restart > /dev/null 2> /dev/null;
 
 
 # Archive unzipper --> me'l puc guardar al meu repo si cal
@@ -154,5 +138,6 @@ systemctl start noip
 
 dialog --title "Configuració finalitzada" --msgbox "El vostre servidor web ha estat correctament configurat. Espereu uns minuts per accedir al vostre domini no-ip per veure el lloc web funcionant.\n\nRecordeu que usareu els noms d'usuari habituals del XAMPP amb la contrasenya que hàgiu indicat al principi." 14 50
 
-
 #TO DO: HACER LOS TÍPICOS CLEAR SCREEN Y DE HISTORIAL DE COMANDOS
+history -c;
+clear;
