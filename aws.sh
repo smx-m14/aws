@@ -15,7 +15,7 @@ apt install dialog gcc make net-tools unzip -y > /dev/null 2> /dev/null;
 
 
 # Variables globals
-userPass="Thos123!";
+userPass=" ";
 
 # Contrasenya d'usuari pel XAMPP
 exitCode1=1;
@@ -67,7 +67,9 @@ sed -i 's/#skip-networking/skip-networking/' /opt/lampp/etc/my.cnf;
 
 # Canvia password del pma i del root???
 echo "update user set Password=password('$userPass') where User = 'pma';" | /opt/lampp/bin/mysql -uroot mysql;
-echo "ALTER USER 'root'@'localhost' IDENTIFIED BY '$userPass';flush privileges;exit;" | /opt/lampp/bin/mysql -uroot;
+echo "ALTER USER 'root'@'localhost' IDENTIFIED BY '$userPass'" | /opt/lampp/bin/mysql -uroot;
+echo "ALTER USER 'pma'@'localhost' IDENTIFIED BY '$userPass'" | /opt/lampp/bin/mysql -uroot;
+echo "flush privileges" | /opt/lampp/bin/mysql -uroot;
 /opt/lampp/bin/mysqladmin reload;
 
 
