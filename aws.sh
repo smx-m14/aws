@@ -75,7 +75,7 @@ mv xampp-linux-x64-7.4.21-1-installer.run xampp.run;
 chmod u+x xampp.run;
 ./xampp.run --mode unattended > /dev/null 2> /dev/null;
 /opt/lampp/lampp restart  > /dev/null 2> /dev/null;
-rm xampp.run;
+rm xampp*;
 
 # Desactiva XAMPP per xarxa
 sed -i 's/#skip-networking/skip-networking/' /opt/lampp/etc/my.cnf
