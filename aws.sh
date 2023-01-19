@@ -11,7 +11,7 @@ fi
 
 # Comprovacions prèvies
 apt update > /dev/null 2> /dev/null;
-apt install dialog gcc make net-tools -y > /dev/null 2> /dev/null;
+apt install dialog gcc make net-tools unzip -y > /dev/null 2> /dev/null;
 
 # Funcions
 askPassword() {
@@ -62,16 +62,15 @@ done
 # TO DO: UNA ADREÇA DE XAMPP QUE SERVEIXI, ARA NO HI HA 7.4.33 --> MILLOR FER MIRROR
 
 # Instal·lem i configurem XAMPP
-wget https://github.com/smx-m14/aws/raw/main/xampp/xampp-linux-x64-7.4.21-1-installer.run.zip.001 > /dev/null 2> /dev/null;
-wget https://github.com/smx-m14/aws/raw/main/xampp/xampp-linux-x64-7.4.21-1-installer.run.zip.002 > /dev/null 2> /dev/null;
-wget https://github.com/smx-m14/aws/raw/main/xampp/xampp-linux-x64-7.4.21-1-installer.run.zip.003 > /dev/null 2> /dev/null;
-wget https://github.com/smx-m14/aws/raw/main/xampp/xampp-linux-x64-7.4.21-1-installer.run.zip.004 > /dev/null 2> /dev/null;
-wget https://github.com/smx-m14/aws/raw/main/xampp/xampp-linux-x64-7.4.21-1-installer.run.zip.005 > /dev/null 2> /dev/null;
-wget https://github.com/smx-m14/aws/raw/main/xampp/xampp-linux-x64-7.4.21-1-installer.run.zip.006 > /dev/null 2> /dev/null;
-wget https://github.com/smx-m14/aws/raw/main/xampp/xampp-linux-x64-7.4.21-1-installer.run.zip.007 > /dev/null 2> /dev/null;
+wget https://github.com/smx-m14/aws/raw/main/xampp/xampp.zip.001 > /dev/null 2> /dev/null;
+wget https://github.com/smx-m14/aws/raw/main/xampp/xampp.zip.002 > /dev/null 2> /dev/null;
+wget https://github.com/smx-m14/aws/raw/main/xampp/xampp.zip.003 > /dev/null 2> /dev/null;
+wget https://github.com/smx-m14/aws/raw/main/xampp/xampp.zip.004 > /dev/null 2> /dev/null;
+wget https://github.com/smx-m14/aws/raw/main/xampp/xampp.zip.005 > /dev/null 2> /dev/null;
+wget https://github.com/smx-m14/aws/raw/main/xampp/xampp.zip.006 > /dev/null 2> /dev/null;
+wget https://github.com/smx-m14/aws/raw/main/xampp/xampp.zip.007 > /dev/null 2> /dev/null;
 cat xampp* > xampp.zip;
 unzip xampp.zip;
-mv xampp-linux-x64-7.4.21-1-installer.run xampp.run;
 chmod u+x xampp.run;
 ./xampp.run --mode unattended > /dev/null 2> /dev/null;
 /opt/lampp/lampp restart  > /dev/null 2> /dev/null;
