@@ -62,10 +62,6 @@ rm xampp* > /dev/null 2> /dev/null;
 # Diàleg XAMPP instal·lat
 dialog --title "XAMPP" --infobox "XAMPP correctament instal·lat." 5 50;
 
-# Desactiva XAMPP per xarxa
-sed -i 's/#skip-networking/skip-networking/' /opt/lampp/etc/my.cnf;
-
-
 # Canvi de password de l'usuari pma i root de mysql
 echo "update user set Password=password('$userPass') where User = 'pma';" | /opt/lampp/bin/mysql -uroot mysql;
 echo "ALTER USER 'pma'@'localhost' IDENTIFIED BY '$userPass'" | /opt/lampp/bin/mysql -uroot;
@@ -73,6 +69,8 @@ echo "ALTER USER 'root'@'localhost' IDENTIFIED BY '$userPass'" | /opt/lampp/bin/
 echo "flush privileges" | /opt/lampp/bin/mysql -uroot -p$userPass;
 /opt/lampp/bin/mysqladmin reload;
 
+# Desactiva XAMPP per xarxa
+sed -i 's/#skip-networking/skip-networking/' /opt/lampp/etc/my.cnf;
 
 # Configuració phpmyadmin
 sed -i 's/AllowOverride AuthConfig Limit/AllowOverride AuthConfig/' /opt/lampp/etc/extra/httpd-xampp.conf
@@ -129,10 +127,10 @@ do
     exitCode2=$?;
     echo "finalització noip $exitCode2";
     
-    if [[ $exitCode2 -ne 0 ]]
-    then
-        dialog --title "NO-IP" --msgbox "La configuració de NO-IP no s'ha pogut completar correctament. Si us plau, reviseu totes les dades introduïdes." 12 50 
-    fi
+    #if [[ $exitCode2 -ne 0 ]]
+    #then
+    #    dialog --title "NO-IP" --msgbox "La configuració de NO-IP no s'ha pogut completar correctament. Si us plau, reviseu totes les dades introduïdes." 12 50 
+    #fi
 done
 
 # Configurem inici automàtic NO IP
