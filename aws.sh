@@ -63,6 +63,7 @@ rm xampp* > /dev/null 2> /dev/null;
 dialog --title "XAMPP" --infobox "XAMPP correctament instal·lat." 5 50;
 
 # Canvi de password de l'usuari pma i root de mysql
+# NO HI HA MANERA DE FER QUE S'ACTUALITZI AQUESTA INFORMACIÓ!!!
 echo "update user set Password=password('$userPass') where User = 'pma';" | /opt/lampp/bin/mysql -uroot mysql
 echo "update user set Password=password('$userPass') where User = 'root';" | /opt/lampp/bin/mysql -uroot mysql
 /opt/lampp/bin/mysqladmin reload;
