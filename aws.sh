@@ -63,11 +63,16 @@ rm xampp* > /dev/null 2> /dev/null;
 dialog --title "XAMPP" --infobox "XAMPP correctament instal·lat." 5 50;
 
 # Canvi de password de l'usuari pma i root de mysql
-/opt/lampp/bin/mysql --user="root" --database="mysql" --execute="update user set Password=password('$userPass') where User = 'pma';"
-/opt/lampp/bin/mysql --user="root" --execute="ALTER USER 'pma'@'localhost' IDENTIFIED BY '$userPass';"
-/opt/lampp/bin/mysql --user="root" --execute="ALTER USER 'root'@'localhost' IDENTIFIED BY '$userPass';"
-/opt/lampp/bin/mysql --user="root" --password="$userPass" --execute="FLUSH PRIVILEGES;"
+echo "update user set Password=password('$userPass') where User = 'pma';" | /opt/lampp/bin/mysql -uroot mysql
+echo "update user set Password=password('$userPass') where User = 'root';" | /opt/lampp/bin/mysql -uroot mysql
 /opt/lampp/bin/mysqladmin reload;
+
+
+#/opt/lampp/bin/mysql --user="root" --password="$userPass" --database="mysql" --execute="update user set Password=password('$userPass') where User = 'pma';"
+#/opt/lampp/bin/mysql --user="root" --password="$userPass"  --execute="ALTER USER 'pma'@'localhost' IDENTIFIED BY '$userPass';"
+#/opt/lampp/bin/mysql --user="root" --password="$userPass"  --execute="ALTER USER 'root'@'localhost' IDENTIFIED BY '$userPass';"
+#/opt/lampp/bin/mysql --user="root" --password="$userPass" --execute="FLUSH PRIVILEGES;"
+#/opt/lampp/bin/mysqladmin reload;
 
 # Desactiva XAMPP per xarxa
 sed -i 's/#skip-networking/skip-networking/' /opt/lampp/etc/my.cnf;
