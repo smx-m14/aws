@@ -126,8 +126,8 @@ exitCode2=1;
 while [[ $exitCode2 -ne 0 ]]
 do
     make install;
-    
     exitCode2 = $?;
+    echo "finalització noip $exitCode2";
     
     if [[ $exitCode2 -ne 0 ]]
     then
