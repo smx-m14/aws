@@ -63,10 +63,10 @@ rm xampp* > /dev/null 2> /dev/null;
 dialog --title "XAMPP" --infobox "XAMPP correctament instal·lat." 5 50;
 
 # Canvi de password de l'usuari pma i root de mysql
-echo "update user set Password=password('$userPass') where User = 'pma';" | /opt/lampp/bin/mysql -uroot mysql;
-echo "ALTER USER 'pma'@'localhost' IDENTIFIED BY '$userPass'" | /opt/lampp/bin/mysql -uroot;
-echo "ALTER USER 'root'@'localhost' IDENTIFIED BY '$userPass'" | /opt/lampp/bin/mysql -uroot;
-echo "flush privileges" | /opt/lampp/bin/mysql -uroot -p$userPass;
+/opt/lampp/bin/mysql --user="root" --database="mysql" --execute="update user set Password=password('$userPass') where User = 'pma';"
+/opt/lampp/bin/mysql --user="root" --execute="ALTER USER 'pma'@'localhost' IDENTIFIED BY '$userPass';"
+/opt/lampp/bin/mysql --user="root" --execute="ALTER USER 'root'@'localhost' IDENTIFIED BY '$userPass';"
+/opt/lampp/bin/mysql --user="root" --password="$userPass" --execute="FLUSH PRIVILEGES;"
 /opt/lampp/bin/mysqladmin reload;
 
 # Desactiva XAMPP per xarxa
