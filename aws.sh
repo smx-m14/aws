@@ -15,9 +15,9 @@ apt install dialog gcc make net-tools unzip -y > /dev/null 2> /dev/null;
 
 
 # Variables globals
-userPass=" ";
+userPass="";
 
-# Contrasenya d'usuari pel XAMPP
+# Contrasenya d'usuari pel XAMPP -> preguntem mentre no s'indiqui dues vegades la mateixa
 exitCode1=1;
 while [[ $exitCode1 -ne 0 ]]
 do
@@ -44,7 +44,7 @@ done
 # Diàleg de descarrega del XAMPP
 dialog --title "XAMPP" --infobox "Espereu mentre instal·lem i configurem XAMPP. Aquesta operació pot trigar uns minuts." 5 50;
 
-# Instal·lem i configurem XAMPP
+# Descarreguem, instal·lem i configurem XAMPP
 wget https://github.com/smx-m14/aws/raw/main/xampp/xampp.zip.001 > /dev/null 2> /dev/null;
 wget https://github.com/smx-m14/aws/raw/main/xampp/xampp.zip.002 > /dev/null 2> /dev/null;
 wget https://github.com/smx-m14/aws/raw/main/xampp/xampp.zip.003 > /dev/null 2> /dev/null;
@@ -65,11 +65,12 @@ dialog --title "XAMPP" --infobox "XAMPP correctament instal·lat." 5 50;
 # Desactiva XAMPP per xarxa
 sed -i 's/#skip-networking/skip-networking/' /opt/lampp/etc/my.cnf;
 
-# Canvia password del pma i del root???
+
+# Canvi de password de l'usuari pma i root de mysql
 echo "update user set Password=password('$userPass') where User = 'pma';" | /opt/lampp/bin/mysql -uroot mysql;
-echo "ALTER USER 'root'@'localhost' IDENTIFIED BY '$userPass'" | /opt/lampp/bin/mysql -uroot;
 echo "ALTER USER 'pma'@'localhost' IDENTIFIED BY '$userPass'" | /opt/lampp/bin/mysql -uroot;
-echo "flush privileges" | /opt/lampp/bin/mysql -uroot;
+echo "ALTER USER 'root'@'localhost' IDENTIFIED BY '$userPass'" | /opt/lampp/bin/mysql -uroot;
+echo "flush privileges" | /opt/lampp/bin/mysql -uroot -p$userPass;
 /opt/lampp/bin/mysqladmin reload;
 
 
@@ -92,9 +93,9 @@ echo "daemon:$userPass" | chpasswd;
 /opt/lampp/lampp restart > /dev/null 2> /dev/null;
 
 
-# Archive unzipper --> me'l puc guardar al meu repo si cal
+# Archive unzipper
 cd /opt/lampp/htdocs
-wget https://raw.githubusercontent.com/ndeet/unzipper/master/unzipper.php > /dev/null 2> /dev/null;
+wget https://raw.githubusercontent.com/smx-m14/aws/main/unzipper/unzipper.php > /dev/null 2> /dev/null;
 
 
 # Creem arxiu d'arrencada automàtica pel XAMPP
@@ -112,18 +113,29 @@ WantedBy=multi-user.target" > /etc/systemd/system/xampp.service
 # Habilitem servei
 systemctl enable xampp
 
-
+# Instal·lació NO-IP
 dialog --title "NO-IP" --msgbox "Ara configurarem el servei NO-IP en el servidor. Tingueu en compte que necessiteu tenir creat el compte a https://www.noip.com/ i un domini per poder-lo configurar.\n\nContesteu les preguntes del script de configuració a continuació:" 12 50 
 
-# NO IP
-# Mostrar missatge que ja està el XAMPP configurat correctament, ara configurarem NO IP
-cd /usr/local/src/
+cd /usr/local/src/;
 wget http://www.noip.com/client/linux/noip-duc-linux.tar.gz  > /dev/null 2> /dev/null;
 tar xf noip-duc-linux.tar.gz  > /dev/null 2> /dev/null;
 cd noip-2.1.9-1/  > /dev/null 2> /dev/null;
-make install
-# comprobar exit code == 0 o reiniciar programa $? o hacer con while
 
+# Servei NO IP --> repetim mentre la configuració no sigui correcta
+exitCode2=1;
+while [[ $exitCode2 -ne 0 ]]
+do
+    make install;
+    
+    exitCode2 = $?;
+    
+    if [[ $exitCode2 -ne 0 ]]
+    then
+        dialog --title "NO-IP" --msgbox "La configuració de NO-IP no s'ha pogut completar correctament. Si us plau, reviseu totes les dades introduïdes." 12 50 
+    fi
+done
+
+# Configurem inici automàtic NO IP
 echo "[Unit]
 Description=NOIP
 
@@ -135,11 +147,12 @@ Restart=always
 [Install]
 WantedBy=multi-user.target" > /etc/systemd/system/noip.service
 
-systemctl enable noip
-systemctl start noip
+systemctl enable noip;
+systemctl start noip;
 
-dialog --title "Configuració finalitzada" --msgbox "El vostre servidor web ha estat correctament configurat. Espereu uns minuts per accedir al vostre domini no-ip per veure el lloc web funcionant.\n\nRecordeu que usareu els noms d'usuari habituals del XAMPP amb la contrasenya que hàgiu indicat al principi." 14 50
+dialog --title "Configuració finalitzada" --msgbox "El vostre servidor web ha estat correctament configurat. Espereu uns minuts per accedir al vostre domini no-ip i veure el lloc web funcionant.\n\nRecordeu que usareu els noms d'usuari habituals del XAMPP amb la contrasenya que hàgiu indicat al principi." 14 50
 
-#TO DO: HACER LOS TÍPICOS CLEAR SCREEN Y DE HISTORIAL DE COMANDOS
+# Netegem pantalla
+cd;
 history -c;
 clear;
