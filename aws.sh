@@ -118,10 +118,10 @@ ExecStop=/opt/lampp/lampp stop
 Type=forking
 
 [Install]
-WantedBy=multi-user.target" > /etc/systemd/system/xampp.service
+WantedBy=multi-user.target" > /etc/systemd/system/xampp.service 2> /dev/null
 
 # Habilitem servei
-systemctl enable xampp
+systemctl enable xampp > /dev/null 2> /dev/null
 
 # Instal·lació NO-IP
 dialog --title "NO-IP" --msgbox "Ara configurarem el servei NO-IP en el servidor. Tingueu en compte que necessiteu tenir creat el compte a https://www.noip.com/ i un domini per poder-lo configurar.\n\nContesteu les preguntes del script de configuració a continuació:\n  * Correu\n  * Contrasenya\n\nLa resta de preguntes es poden contestar amb Enter." 17 50 
