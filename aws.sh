@@ -124,7 +124,8 @@ WantedBy=multi-user.target" > /etc/systemd/system/xampp.service
 systemctl enable xampp
 
 # Instal·lació NO-IP
-dialog --title "NO-IP" --msgbox "Ara configurarem el servei NO-IP en el servidor. Tingueu en compte que necessiteu tenir creat el compte a https://www.noip.com/ i un domini per poder-lo configurar.\n\nContesteu les preguntes del script de configuració a continuació:\n  * Correu\n  * Contrasenya\nLa resta de preguntes es poden contestar amb Enter." 17 50 
+dialog --title "NO-IP" --msgbox "Ara configurarem el servei NO-IP en el servidor. Tingueu en compte que necessiteu tenir creat el compte a https://www.noip.com/ i un domini per poder-lo configurar.\n\nContesteu les preguntes del script de configuració a continuació:\n  * Correu\n  * Contrasenya\n\nLa resta de preguntes es poden contestar amb Enter." 17 50 
+clear;
 cd /usr/local/src/;
 wget http://www.noip.com/client/linux/noip-duc-linux.tar.gz  > /dev/null 2> /dev/null;
 tar xf noip-duc-linux.tar.gz  > /dev/null 2> /dev/null;
