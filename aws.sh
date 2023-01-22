@@ -124,26 +124,23 @@ WantedBy=multi-user.target" > /etc/systemd/system/xampp.service
 systemctl enable xampp
 
 # Instal·lació NO-IP
-dialog --title "NO-IP" --msgbox "Ara configurarem el servei NO-IP en el servidor. Tingueu en compte que necessiteu tenir creat el compte a https://www.noip.com/ i un domini per poder-lo configurar.\n\nContesteu les preguntes del script de configuració a continuació:" 12 50 
-
+dialog --title "NO-IP" --msgbox "Ara configurarem el servei NO-IP en el servidor. Tingueu en compte que necessiteu tenir creat el compte a https://www.noip.com/ i un domini per poder-lo configurar.\n\nContesteu les preguntes del script de configuració a continuació:\n  * Correu\n  * Contrasenya\nLa resta de preguntes es poden contestar amb Enter." 17 50 
 cd /usr/local/src/;
 wget http://www.noip.com/client/linux/noip-duc-linux.tar.gz  > /dev/null 2> /dev/null;
 tar xf noip-duc-linux.tar.gz  > /dev/null 2> /dev/null;
 cd noip-2.1.9-1/  > /dev/null 2> /dev/null;
 
 # Servei NO IP --> repetim mentre la configuració no sigui correcta
-exitCode2=1;
-while [[ $exitCode2 -ne 0 ]]
+lines=0;
+while [ $lines -ne 1 ]
 do
-    make install 2> /dev/null;
-    exitCode2=$?;
-    
-    dialog --title "NOIP FINALITZAT" --msgbox "Instal·lació de no-ip finalitzada amb codi $exitCode2" 14 50
-    
-    #if [[ $exitCode2 -ne 0 ]]
-    #then
-    #    dialog --title "NO-IP" --msgbox "La configuració de NO-IP no s'ha pogut completar correctament. Si us plau, reviseu totes les dades introduïdes." 12 50 
-    #fi
+   make install 2>&1 | tee /tmp/noip.txt;
+   lines=`cat /tmp/noip.txt | grep "It will be used" | wc -l`;
+   
+   if [ $lines -ne 1 ]
+   then
+        dialog --title "NO-IP" --msgbox "La configuració de NO-IP no s'ha pogut completar correctament. Si us plau, reviseu tots els paràmetres de configuració." 8 50     
+   fi
 done
 
 # Configurem inici automàtic NO IP
@@ -158,12 +155,11 @@ Restart=always
 [Install]
 WantedBy=multi-user.target" > /etc/systemd/system/noip.service
 
-systemctl enable noip;
-systemctl start noip;
+systemctl enable noip 2> /dev/null > /dev/null;
+systemctl start noip 2> /dev/null > /dev/null;
 
-dialog --title "Configuració finalitzada" --msgbox "El vostre servidor web ha estat correctament configurat. Espereu uns minuts per accedir al vostre domini no-ip i veure el lloc web funcionant.\n\nRecordeu que usareu els noms d'usuari habituals del XAMPP amb la contrasenya que hàgiu indicat al principi." 14 50
+dialog --title "Configuració finalitzada" --msgbox "El vostre servidor web ha estat correctament configurat. Espereu uns minuts per accedir-hi per primera vegada" 8 50
 
 # Netegem pantalla
-cd;
-history -c;
 clear;
+history -c;
