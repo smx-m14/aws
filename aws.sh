@@ -62,18 +62,24 @@ rm xampp* > /dev/null 2> /dev/null;
 # Diàleg XAMPP instal·lat
 dialog --title "XAMPP" --infobox "XAMPP correctament instal·lat." 5 50;
 
+
+/opt/lampp/lampp restart > /dev/null 2> /dev/null;
+sleep 5;
+
 # Canvi de password de l'usuari pma i root de mysql
-# NO HI HA MANERA DE FER QUE S'ACTUALITZI AQUESTA INFORMACIÓ!!!
-/opt/lampp/lampp restart > /dev/null 2> /dev/null;
-echo "update user set Password=password('$userPass') where User = 'pma';" | /opt/lampp/bin/mysql -uroot mysql
-echo "update user set Password=password('$userPass') where User = 'root';" | /opt/lampp/bin/mysql -uroot mysql
-/opt/lampp/lampp restart > /dev/null 2> /dev/null;
-
-
+/opt/lampp/bin/mysqladmin --user="root" password "$userPass"
 /opt/lampp/bin/mysql --user="root" --password="$userPass"  --execute="ALTER USER 'pma'@'localhost' IDENTIFIED BY '$userPass';"
-/opt/lampp/bin/mysql --user="root" --password="$userPass"  --execute="ALTER USER 'root'@'localhost' IDENTIFIED BY '$userPass';"
-/opt/lampp/bin/mysql --user="root" --password="$userPass" --execute="FLUSH PRIVILEGES;"
-/opt/lampp/lampp restart > /dev/null 2> /dev/null;
+
+
+# echo "update user set Password=password('$userPass') where User = 'pma';" | /opt/lampp/bin/mysql -uroot mysql
+# echo "update user set Password=password('$userPass') where User = 'root';" | /opt/lampp/bin/mysql -uroot mysql
+# /opt/lampp/lampp restart > /dev/null 2> /dev/null;
+
+
+# /opt/lampp/bin/mysql --user="root" --password="$userPass"  --execute="ALTER USER 'pma'@'localhost' IDENTIFIED BY '$userPass';"
+# /opt/lampp/bin/mysql --user="root" --password="$userPass"  --execute="ALTER USER 'root'@'localhost' IDENTIFIED BY '$userPass';"
+# /opt/lampp/bin/mysql --user="root" --password="$userPass" --execute="FLUSH PRIVILEGES;"
+# /opt/lampp/lampp restart > /dev/null 2> /dev/null;
 
 # Desactiva XAMPP per xarxa
 sed -i 's/#skip-networking/skip-networking/' /opt/lampp/etc/my.cnf;
@@ -129,9 +135,10 @@ cd noip-2.1.9-1/  > /dev/null 2> /dev/null;
 exitCode2=1;
 while [[ $exitCode2 -ne 0 ]]
 do
-    make install;
+    make install 2> /dev/null;
     exitCode2=$?;
-    echo "finalització noip $exitCode2";
+    
+    dialog --title "NOIP FINALITZAT" --msgbox "Instal·lació de no-ip finalitzada amb codi $exitCode2" 14 50
     
     #if [[ $exitCode2 -ne 0 ]]
     #then
