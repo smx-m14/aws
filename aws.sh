@@ -70,17 +70,6 @@ sleep 5;
 /opt/lampp/bin/mysqladmin --user="root" password "$userPass"
 /opt/lampp/bin/mysql --user="root" --password="$userPass"  --execute="ALTER USER 'pma'@'localhost' IDENTIFIED BY '$userPass';"
 
-
-# echo "update user set Password=password('$userPass') where User = 'pma';" | /opt/lampp/bin/mysql -uroot mysql
-# echo "update user set Password=password('$userPass') where User = 'root';" | /opt/lampp/bin/mysql -uroot mysql
-# /opt/lampp/lampp restart > /dev/null 2> /dev/null;
-
-
-# /opt/lampp/bin/mysql --user="root" --password="$userPass"  --execute="ALTER USER 'pma'@'localhost' IDENTIFIED BY '$userPass';"
-# /opt/lampp/bin/mysql --user="root" --password="$userPass"  --execute="ALTER USER 'root'@'localhost' IDENTIFIED BY '$userPass';"
-# /opt/lampp/bin/mysql --user="root" --password="$userPass" --execute="FLUSH PRIVILEGES;"
-# /opt/lampp/lampp restart > /dev/null 2> /dev/null;
-
 # Desactiva XAMPP per xarxa
 sed -i 's/#skip-networking/skip-networking/' /opt/lampp/etc/my.cnf;
 
