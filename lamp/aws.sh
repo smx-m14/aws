@@ -40,7 +40,7 @@ do
 done
 
 # Instal·lem tota la resta de paquets pel servidor
-apt install -y apache2 mysql-server libapache2-mod-php8.1 php8.1-intl php8.1-gmp php8.1-bcmath php-imagick  php8.1-sqlite3 dbconfig-common dbconfig-mysql default-mysql-client icc-profiles-free  javascript-common libjs-bootstrap4 libjs-codemirror libjs-jquery libjs-jquery-mousewheel libjs-jquery-timepicker libjs-jquery-ui libjs-popper.js libjs-sizzle libjs-sphinxdoc libjs-underscore libonig5 libzip4 mysql-client-8.0 mysql-client-core-8.0 mysql-common node-jquery php-bz2 php-cli php-common php-curl php-gd php-google-recaptcha php-json   php-mariadb-mysql-kbs php-mbstring php-mysql php-nikic-fast-route   php-phpmyadmin-motranslator php-phpmyadmin-shapefile php-phpmyadmin-sql-parser php-phpseclib php-psr-cache php-psr-container php-psr-log php-symfony-cache php-symfony-cache-contracts php-symfony-config php-symfony-dependency-injection php-symfony-deprecation-contracts php-symfony-expression-language php-symfony-filesystem php-symfony-polyfill-php80 php-symfony-polyfill-php81   php-symfony-service-contracts php-symfony-var-exporter php-tcpdf php-twig   php-twig-i18n-extension php-xml php-zip php8.1-bz2 php8.1-cli php8.1-common php8.1-curl php8.1-gd php8.1-mbstring php8.1-mysql php8.1-opcache php8.1-readline php8.1-xml php8.1-zip  > /dev/null 2> /dev/null;
+apt install -y apache2 mysql-server libapache2-mod-php8.1 php8.1-intl php8.1-gmp php8.1-bcmath php-imagick  php8.1-sqlite3 dbconfig-common dbconfig-mysql default-mysql-client icc-profiles-free  javascript-common libjs-bootstrap4 libjs-codemirror libjs-jquery libjs-jquery-mousewheel libjs-jquery-timepicker libjs-jquery-ui libjs-popper.js libjs-sizzle libjs-sphinxdoc libjs-underscore libonig5 libzip4 mysql-client-8.0 mysql-client-core-8.0 mysql-common node-jquery php-bz2 php-cli php-common php-curl php-gd php-google-recaptcha php-json   php-mariadb-mysql-kbs php-mbstring php-mysql php-nikic-fast-route   php-phpmyadmin-motranslator php-phpmyadmin-shapefile php-phpmyadmin-sql-parser php-phpseclib php-psr-cache php-psr-container php-psr-log php-symfony-cache php-symfony-cache-contracts php-symfony-config php-symfony-dependency-injection php-symfony-deprecation-contracts php-symfony-expression-language php-symfony-filesystem php-symfony-polyfill-php80 php-symfony-polyfill-php81   php-symfony-service-contracts php-symfony-var-exporter php-tcpdf php-twig   php-twig-i18n-extension php-xml php-zip php8.1-bz2 php8.1-cli php8.1-common php8.1-curl php8.1-gd php8.1-mbstring php8.1-mysql php8.1-opcache php8.1-readline php8.1-xml php8.1-zip gcc make > /dev/null 2> /dev/null;
 
 # Habilitem mòdul manualment
 sudo phpenmod mbstring > /dev/null 2> /dev/null;
@@ -67,10 +67,10 @@ echo "\$cfg['Servers'][\$i]['controlpass'] = '$userPass';" >> config.inc.php;
 sudo sed -i "29 i\    	Alias /phpmyadmin /var/www/phpmyadmin" /etc/apache2/sites-available/000-default.conf;
 
 sudo systemctl start mysql > /dev/null 2> /dev/null;
-sudo mysql --execute "ALTER USER 'root'@'localhost' IDENTIFIED WITH caching_sha2_password BY '$userPass'";
-mysql -uroot -p"$userPass" < /var/www/phpmyadmin/sql/create_tables.sql;
-sudo mysql -uroot -p"$userPass" --execute "CREATE USER 'pma'@'localhost' IDENTIFIED WITH caching_sha2_password BY '$userPass'";
-sudo mysql -uroot -p"$userPass" --execute "GRANT SELECT, INSERT, UPDATE, DELETE ON phpmyadmin.* TO 'pma'@'localhost'";
+sudo mysql --execute "ALTER USER 'root'@'localhost' IDENTIFIED WITH caching_sha2_password BY '$userPass'" > /dev/null 2> /dev/null;
+mysql -uroot -p"$userPass" < /var/www/phpmyadmin/sql/create_tables.sql > /dev/null 2> /dev/null;
+sudo mysql -uroot -p"$userPass" --execute "CREATE USER 'pma'@'localhost' IDENTIFIED WITH caching_sha2_password BY '$userPass'" > /dev/null 2> /dev/null;
+sudo mysql -uroot -p"$userPass" --execute "GRANT SELECT, INSERT, UPDATE, DELETE ON phpmyadmin.* TO 'pma'@'localhost'" > /dev/null 2> /dev/null;
 
 
 # Descarreguem i instal·lem unzipper
